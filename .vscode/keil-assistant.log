@@ -1,0 +1,53 @@
+[info] Log at : 2025/6/30|18:47:59|GMT+0800
+
+[info] Log at : 2025/6/30|18:52:21|GMT+0800
+
+[info] Log at : 2025/6/30|19:34:34|GMT+0800
+
+[info] Log at : 2025/6/30|19:37:14|GMT+0800
+
+[info] Log at : 2025/6/30|21:37:17|GMT+0800
+
+[info] Log at : 2025/6/30|21:39:35|GMT+0800
+
+[info] Log at : 2025/6/30|21:43:26|GMT+0800
+
+[info] Log at : 2025/7/1|08:39:35|GMT+0800
+
+[info] Log at : 2025/7/1|08:46:34|GMT+0800
+
+[SyntaxError: Unexpected end of JSON input
+	at JSON.parse (<anonymous>)
+	at F.updateCppProperties (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:10849)
+	at F.<anonymous> (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:12579)
+	at Generator.next (<anonymous>)
+	at c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:4480
+	at new Promise (<anonymous>)
+	at r (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:4225)
+	at F.load (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:11310)
+	at w.<anonymous> (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:8737)
+	at Generator.next (<anonymous>)
+	at a (c:\Users\16200\.trae\extensions\cl.keil-assistant-1.7.0\dist\extension.js:1:4282)
+	at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]
+[info] Log at : 2025/7/1|11:13:57|GMT+0800
+
+[info] Log at : 2025/7/1|11:18:10|GMT+0800
+
+[info] Log at : 2025/7/1|11:19:54|GMT+0800
+
+[info] Log at : 2025/7/1|12:07:18|GMT+0800
+
+[info] Log at : 2025/7/1|13:40:45|GMT+0800
+
+[info] Log at : 2025/7/1|13:57:32|GMT+0800
+
+[info] Log at : 2025/7/1|14:34:25|GMT+0800
+
+[info] Log at : 2025/7/1|18:51:42|GMT+0800
+
+[info] Log at : 2025/7/1|19:33:26|GMT+0800
+
+[info] Log at : 2025/7/1|20:33:30|GMT+0800
+
+[info] Log at : 2025/7/1|20:40:06|GMT+0800
+

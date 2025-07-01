@@ -1,0 +1,9 @@
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\51\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling esp8266.c...
+"no source": Error:  #5: cannot open source input file "Hardware\esp8266.c": No such file or directory
+Hardware\esp8266.c: 0 warnings, 1 error
+linking...
+Program Size: Code=14228 RO-data=3440 RW-data=48 ZI-data=1680  
+".\Objects\Project.axf" - 0 Error(s), 0 Warning(s).
+Build Time Elapsed:  00:00:01
