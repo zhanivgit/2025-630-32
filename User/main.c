@@ -2,6 +2,9 @@
 //按键1是打开低速蜂鸣器，风扇，LED控制，同时发送复杂数据
 //按键2是打开中速蜂鸣器，风扇，LED控制，同时发送复杂数据
 //按键3是打开高速蜂鸣器，风扇，LED控制 ，同时发送复杂数据
+//按键1是打开低速蜂鸣器，风扇，LED控制
+//按键2是打开中速蜂鸣器，风扇，LED控制
+//按键3是打开高速蜂鸣器，风扇，LED控制
 //按键4是每隔一秒自动发送简单数据
 //按键5是停止所有发送数据
 //按键6是每秒发送复杂数据，每隔5s发送一次简单数据(有问题)
@@ -263,9 +266,8 @@ int main(void)
         // 检查是否有串口数据接收
         if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET) {
             RxData = USART_ReceiveData(USART1);
-            OLED_ShowHexNum(1, 13, RxData, 1);
-              OLED_ShowString(4, 12, "    "); // 清除发送状态显示
-            }
+            OLED_ShowHexNum(3, 13, RxData, 1);
+        }
              
         // 处理蓝牙控制
         Bluetooth_Control();

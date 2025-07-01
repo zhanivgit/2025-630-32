@@ -750,7 +750,6 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Beep.h</FilePath>
             </File>
-
             <File>
               <FileName>Fan.c</FileName>
               <FileType>1</FileType>
