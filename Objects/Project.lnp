@@ -34,7 +34,6 @@
 ".\objects\mq2.o"
 ".\objects\led.o"
 ".\objects\beep.o"
-".\objects\esp8266.o"
 ".\objects\fan.o"
 ".\objects\speaker.o"
 ".\objects\serial.o"

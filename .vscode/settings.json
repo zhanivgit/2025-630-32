@@ -82,6 +82,8 @@
     "serial.h": "c",
     "stm32f10x_tim.h": "c",
     "stm32f10x_rcc.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "stm32f10x_gpio.h": "c",
+    "adc.h": "c"
   }
 }

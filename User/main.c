@@ -1,7 +1,7 @@
 //按键0是关闭蜂鸣器，风扇，LED控制
-//按键1是打开低速蜂鸣器，风扇，LED控制
-//按键2是打开中速蜂鸣器，风扇，LED控制
-//按键3是打开高速蜂鸣器，风扇，LED控制
+//按键1是打开低速蜂鸣器，风扇，LED控制，同时发送复杂数据
+//按键2是打开中速蜂鸣器，风扇，LED控制，同时发送复杂数据
+//按键3是打开高速蜂鸣器，风扇，LED控制 ，同时发送复杂数据
 //按键4是每隔一秒自动发送简单数据
 //按键5是停止所有发送数据
 //按键6是每秒发送复杂数据，每隔5s发送一次简单数据(有问题)
@@ -81,13 +81,7 @@ void Bluetooth_Control(void)//蓝牙控制
         SendDataFlag = 0;
         SendDataTimer = 0;
         OLED_ShowString(4, 12, "    "); // 清除发送状态显示
-    } else if (RxData == 6) {
-        // 发送一次完整的状态信息
-        Send_Full_Status();
-        OLED_ShowString(4, 12, "Full");
-        Delay_ms(500); // 短暂显示发送状态
-        OLED_ShowString(4, 12, "    "); // 清除发送状态显示
-    }
+    } 
 }
 
 void Temperature_Humidity_Alert(void)//传感器检测（控制led,风扇，蜂鸣器）
@@ -98,15 +92,18 @@ void Temperature_Humidity_Alert(void)//传感器检测（控制led,风扇，蜂�
             BEEP_On();
             LED1_ON();
             Fan_SetPWM(80); // 风扇高速转动
+            Send_Full_Status();
             OLED_ShowString(4, 1, "Temp Alert: High");
         } else if (temp > 40 || humi > 75) { // 中级报警：温度偏高或湿度偏高
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
             Fan_SetPWM(50); // 风扇中速转动
+            Send_Full_Status();
             OLED_ShowString(4, 1, "Temp Alert: Mid ");
         } else if (temp > 30 || humi > 70) { // 低级报警：温度略高或湿度略高
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
+            Send_Full_Status();
             Fan_SetPWM(20); // 风扇低速转动
             OLED_ShowString(4, 1, "Temp Alert: Low ");
         } else { // 正常范围
@@ -267,24 +264,9 @@ int main(void)
         if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET) {
             RxData = USART_ReceiveData(USART1);
             OLED_ShowHexNum(1, 13, RxData, 1);
-            
-            //按键7是每隔5s发送一次简单数据
-            if (RxData == 7) {
-                Serial_Printf("T:%d,H:%d,Time:%02d:%02d:%02d\r\n", 
-                              temp, humi, 
-                              MyRTC_Time[3], MyRTC_Time[4], MyRTC_Time[5]);
-                OLED_ShowString(4, 12, "Send");
-                Delay_ms(500); // 短暂显示发送状态
-                OLED_ShowString(4, 12, "    "); // 清除发送状态显示
+              OLED_ShowString(4, 12, "    "); // 清除发送状态显示
             }
-            //按键8是发送一次复杂数据后,又开始每隔5S发一次简单数据(有问题) 
-            else if (RxData == 8) {
-                Send_Full_Status();
-                OLED_ShowString(4, 12, "Full");
-                Delay_ms(500); // 短暂显示发送状态
-                OLED_ShowString(4, 12, "    "); // 清除发送状态显示
-            }
-        }        
+             
         // 处理蓝牙控制
         Bluetooth_Control();
         

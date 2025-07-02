@@ -750,16 +750,7 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Beep.h</FilePath>
             </File>
-            <File>
-              <FileName>esp8266.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\esp8266.c</FilePath>
-            </File>
-            <File>
-              <FileName>esp8266.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\esp8266.h</FilePath>
-            </File>
+
             <File>
               <FileName>Fan.c</FileName>
               <FileType>1</FileType>

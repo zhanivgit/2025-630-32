@@ -4,7 +4,7 @@
 //数据#include "dht11.h"
 #include "delay.h"
       
-void DHT11_Rst(void)	   
+void DHT11_Rst(void) //复位	   
 {                 
 	DHT11_Mode(OUT); 	
 	DHT11_Low; 	     
@@ -13,7 +13,7 @@ void DHT11_Rst(void)
 	Delay_us(13);     	
 }
 
-u8 DHT11_Check(void) 	   
+u8 DHT11_Check(void) 	   //发送低高
 {   
 	u8 retry=0;
 	DHT11_Mode(IN);//SET INPUT	 
@@ -34,7 +34,7 @@ u8 DHT11_Check(void)
 }
 
 
-u8 DHT11_Read_Bit(void) 			 
+u8 DHT11_Read_Bit(void) 			 //读取数据
 {
  	u8 retry=0;
 	while(GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)//µÈ´ý±äÎªµÍµçÆ½
