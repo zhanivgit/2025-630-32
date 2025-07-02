@@ -18,7 +18,7 @@
 #include "Fan.h"
 #include "Dth11.h"
 #include "Serial.h"
-
+u16 value;
 // 全局变量定义
 u8 temp = 25;   // 温度初始值设为25度（室温）
 u8 humi = 50;   // 湿度初始值设为50%（适中湿度）
@@ -31,6 +31,7 @@ uint8_t RxData = 0xFF;                  // 串口接收数据，初始化为无�
 uint8_t BluetoothControl = 0;           // 蓝牙控制标志，0=未控制，1=已控制
 uint16_t SendDataTimer = 0;             // 发送数据计时器
 uint8_t SendDataFlag = 0;               // 发送数据标志，0=不发送，1=发送
+float ppm;
 
 // 新增变量用于优化蓝牙通信
 uint8_t LastRxData = 0xFF;              // 上次接收的数据，用于避免重复处理
@@ -65,7 +66,7 @@ void Handle_Serial_Data(void) // 改进的串口数据处理
             uart_timeout = 0;
             
             // 显示接收到的数据
-            OLED_ShowHexNum(3, 13, RxData, 1);
+            OLED_ShowHexNum(3, 16, RxData, 1);
             
             // 设置蓝牙通信延时，避免立即处理
             BluetoothCommDelay = 5; // 延时50ms后处理
@@ -116,8 +117,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         // 延迟发送复杂数据，避免通信冲突
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
-            
-        OLED_ShowString(4, 1, "Fan: Low Speed ");
+
         
     } else if (RxData == 2) {
         // 风扇中速转动
@@ -131,8 +131,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
-        
-        OLED_ShowString(4, 1, "Fan: Mid Speed ");
+
         
     } else if (RxData == 3) {
         // 风扇高速转动
@@ -147,7 +146,6 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
         
-        OLED_ShowString(4, 1, "Fan: High Speed");
         
     } else if (RxData == 0) {
         // 关闭所有设备
@@ -164,21 +162,17 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         NeedSendFullStatus = 0;
         SendDelayCounter = 0;
         
-        OLED_ShowString(4, 1, "All Devices Off ");
-        
     } else if (RxData == 4) {
         // 开启温湿度数据发送功能
         StopAllSending = 0;    // 允许发送数据
         SendDataFlag = 1;      // 立即发送一次数据
         SendDataTimer = 0;     // 重置计时器
-        OLED_ShowString(4, 12, "Auto"); // 显示自动发送状态
         
     } else if (RxData == 5) {
         // 关闭所有数据发送功能
         StopAllSending = 1;         // 停止所有数据发送
         SendDataFlag = 0;           // 停止简单数据发送
         SendDataTimer = 0;
-        OLED_ShowString(4, 12, "Stop"); // 显示停止发送状态
     }
 }
 
@@ -193,7 +187,6 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
-        OLED_ShowString(4, 1, "Temp Alert: High");
         
     } else if (temp > 40 || humi > 75) { // 中级报警：温度偏高或湿度偏高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
@@ -203,7 +196,6 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
-        OLED_ShowString(4, 1, "Temp Alert: Mid ");
         
     } else if (temp > 30 || humi > 70) { // 低级报警：温度略高或湿度略高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
@@ -213,7 +205,6 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
-        OLED_ShowString(4, 1, "Temp Alert: Low ");
         
     } else { // 正常范围
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
@@ -221,14 +212,9 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
             LED1_OFF();
             Fan_SetPWM(0); // 风扇停止转动
             
-            if (Flag_Change == 0) {
-                OLED_ShowString(4, 1, "Change Date     ");
-            } else {
-                OLED_ShowString(4, 1, "Change Time     ");
             }
         }
     }
-}
 
 void Send_TempHumi_Data(void) // 发送简单数据
 {
@@ -246,9 +232,7 @@ void Send_TempHumi_Data(void) // 发送简单数据
                       temp, humi, 
                       MyRTC_Time[3], MyRTC_Time[4], MyRTC_Time[5]);
         
-        // 在OLED上显示发送状态
-        OLED_ShowString(4, 12, "Send");
-        
+
         // 重置发送标志
         SendDataFlag = 0;
     }
@@ -357,7 +341,7 @@ int main(void)
     MyRTC_Init();    // RTC时钟
     Key_Init();      // 按键
     Fan_PWM_Init();  // 风扇PWM
-    
+    MQ2_Init();
     // 初始化延时，确保所有设备稳定
     Delay_ms(1000);
     
@@ -371,6 +355,9 @@ int main(void)
     OLED_ShowChinese(3, 2, 1); // 度
     OLED_ShowChar(3, 5, ':');	
     OLED_ShowChar(3, 8, '%');
+    OLED_ShowChinese(4, 1, 30); // PPM
+    OLED_ShowChinese(4,2,31);
+    OLED_ShowChar(4, 5, ':');
     
     // 主循环计数器
     uint16_t loop_counter = 0;
@@ -380,8 +367,8 @@ int main(void)
     {
         // 处理串口数据接收（每次循环都检查）
         Handle_Serial_Data();
-        
-        // 处理蓝牙命令（延时处理）
+            ppm = MQ2_GetData_PPM();
+            // 处理蓝牙命令（延时处理）
         Process_Bluetooth_Command();
         
         // 每10个循环（约1秒）执行一次的任务
@@ -392,6 +379,7 @@ int main(void)
             // 显示温湿度
             OLED_ShowNum(2, 6, temp, 2);
             OLED_ShowNum(3, 6, humi, 2);
+            OLED_ShowFloat(4, 6, ppm, 4, 2);
             
             // 读取并更新时间
             MyRTC_ReadTime();

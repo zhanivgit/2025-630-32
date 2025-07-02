@@ -194,6 +194,43 @@ void OLED_ShowNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Length)
 }
 
 /**
+  * @brief  OLED显示浮点数
+  * @param  Line 起始行位置，范围：1~4
+  * @param  Column 起始列位置，范围：1~16
+  * @param  FloatNum 要显示的浮点数
+  * @param  IntLength 整数部分的长度
+  * @param  DecLength 小数部分的长度
+  * @retval 无
+  */
+void OLED_ShowFloat(uint8_t Line, uint8_t Column, float FloatNum, uint8_t IntLength, uint8_t DecLength)
+{
+    uint32_t IntPart, DecPart;
+    uint8_t i;
+
+    // 处理负数
+    if (FloatNum < 0)
+    {
+        OLED_ShowChar(Line, Column, '-');
+        FloatNum = -FloatNum;
+        Column++;
+    }
+
+    // 提取整数部分
+    IntPart = (uint32_t)FloatNum;
+    OLED_ShowNum(Line, Column, IntPart, IntLength);
+
+    // 提取小数部分并四舍五入
+    // 例如，DecLength为2，则乘以100，然后四舍五入
+    DecPart = (uint32_t)((FloatNum - IntPart) * OLED_Pow(10, DecLength) + 0.5f);
+
+    // 显示小数点
+    OLED_ShowChar(Line, Column + IntLength, '.');
+
+    // 显示小数部分
+    OLED_ShowNum(Line, Column + IntLength + 1, DecPart, DecLength);
+}
+
+/**
   * @brief  OLED显示数字（十进制，带符号数）
   * @param  Line 起始行位置，范围：1~4
   * @param  Column 起始列位置，范围：1~16
@@ -273,6 +310,52 @@ void OLED_ShowBinNum(uint8_t Line, uint8_t Column, uint32_t Number, uint8_t Leng
 	for (i = 0; i < Length; i++)							
 	{
 		OLED_ShowChar(Line, Column + i, Number / OLED_Pow(2, Length - i - 1) % 2 + '0');
+	}
+}
+u8 OLED_GRAM[144][8];
+
+void OLED_DrawPoint(u8 x,u8 y,u8 t)
+{
+	u8 i,m,n;
+	i=y/8;
+	m=y%8;
+	n=1<<m;
+	if(t){OLED_GRAM[x][i]|=n;}
+	else
+	{
+		OLED_GRAM[x][i]=~OLED_GRAM[x][i];
+		OLED_GRAM[x][i]|=n;
+		OLED_GRAM[x][i]=~OLED_GRAM[x][i];
+	}
+//	OLED_Refresh();
+}
+void OLED_ShowChinese1(u8 x,u8 y,u8 num,u8 size1,u8 mode)
+{
+	u8 m,temp;
+	u8 x0=x,y0=y;
+	u16 i,size3=(size1/8+((size1%8)?1:0))*size1;  //得到字体一个字符对应点阵集所占的字节数
+	for(i=0;i<size3;i++)
+	{
+		if(size1==16)
+				{temp=Hzk11[num][i];}//调用16*16字体
+		else if(size1==24)
+				{temp=Hzk2[num][i];}//调用24*24字体
+		else if(size1==32)       
+				{temp=Hzk3[num][i];}//调用32*32字体
+		else if(size1==64)
+				{temp=Hzk4[num][i];}//调用64*64字体
+		else return;
+		for(m=0;m<8;m++)
+		{
+			if(temp&0x01)OLED_DrawPoint(x,y,mode);
+			else OLED_DrawPoint(x,y,!mode);
+			temp>>=1;
+			y++;
+		}
+		x++;
+		if((x-x0)==size1)
+		{x=x0;y0=y0+8;}
+		y=y0;
 	}
 }
 
