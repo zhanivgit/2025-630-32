@@ -112,7 +112,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetPWM(20);
+        Fan_SetSpeed(20);
         
         // 延迟发送复杂数据，避免通信冲突
         NeedSendFullStatus = 1;
@@ -127,7 +127,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetPWM(50);
+        Fan_SetSpeed(50);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -141,7 +141,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetPWM(80);
+        Fan_SetSpeed(80);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -156,7 +156,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         LED1_OFF();
         Delay_ms(10);
-        Fan_SetPWM(0);
+        Fan_SetSpeed(0);
         
         // 清除发送状态
         NeedSendFullStatus = 0;
@@ -183,7 +183,7 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On();
             LED1_ON();
-            Fan_SetPWM(80); // 风扇高速转动
+            Fan_SetSpeed(80); // 风扇高速转动
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -192,7 +192,7 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
-            Fan_SetPWM(50); // 风扇中速转动
+            Fan_SetSpeed(50); // 风扇中速转动
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -201,7 +201,7 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
-            Fan_SetPWM(20); // 风扇低速转动
+            Fan_SetSpeed(20); // 风扇低速转动
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -210,7 +210,7 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_Off();
             LED1_OFF();
-            Fan_SetPWM(0); // 风扇停止转动
+            Fan_SetSpeed(0); // 风扇停止转动
             
             }
         }
@@ -342,6 +342,8 @@ int main(void)
     Key_Init();      // 按键
     Fan_PWM_Init();  // 风扇PWM
     MQ2_Init();
+    FAN_gpio();
+
     // 初始化延时，确保所有设备稳定
     Delay_ms(1000);
     

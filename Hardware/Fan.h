@@ -5,5 +5,7 @@
 
 void Fan_PWM_Init(void);
 void Fan_SetPWM(uint16_t Compare);
+void FAN_gpio(void);
+void Fan_SetSpeed(uint16_t speed);
 
 #endif
