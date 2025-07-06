@@ -12,7 +12,7 @@
 //Ä£Ê½Ñ¡Ôñ	
 //Ä£ÄâAO:	1
 //Êý×ÖDO:	0
-#define	MODE 	1
+#define	MODE 	0
 
 /***************¸ù¾Ý×Ô¼ºÐèÇó¸ü¸Ä****************/
 // MQ-2 GPIOºê¶¨Òå
@@ -20,12 +20,12 @@
 #define		MQ2_AO_GPIO_CLK								RCC_APB2Periph_GPIOA
 #define 	MQ2_AO_GPIO_PORT							GPIOA
 #define 	MQ2_AO_GPIO_PIN								GPIO_Pin_0
-#define   ADC_CHANNEL               		ADC_Channel_0	// ADC Í¨µÀºê¶¨Òå
+#define   ADC_CHANNEL               		ADC_Channel_0	// ADC Í¨µÀºê¶À¶¨Òå
 
 #else
 #define		MQ2_DO_GPIO_CLK								RCC_APB2Periph_GPIOA
 #define 	MQ2_DO_GPIO_PORT							GPIOA
-#define 	MQ2_DO_GPIO_PIN								GPIO_Pin_1			
+#define 	MQ2_DO_GPIO_PIN								GPIO_Pin_0			
 
 #endif
 /*********************END**********************/
@@ -36,4 +36,3 @@ uint16_t MQ2_GetData(void);
 float MQ2_GetData_PPM(void);
 
 #endif /* __ADC_H */
-

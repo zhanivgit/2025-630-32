@@ -31,7 +31,7 @@ uint8_t RxData = 0xFF;                  // 串口接收数据，初始化为无�
 uint8_t BluetoothControl = 0;           // 蓝牙控制标志，0=未控制，1=已控制
 uint16_t SendDataTimer = 0;             // 发送数据计时器
 uint8_t SendDataFlag = 0;               // 发送数据标志，0=不发送，1=发送
-float ppm;
+uint16_t MQ2_Value; // 用于存储MQ2数字值
 
 // 新增变量用于优化蓝牙通信
 uint8_t LastRxData = 0xFF;              // 上次接收的数据，用于避免重复处理
@@ -127,7 +127,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetSpeed(20);
+        Fan_SetSpeed(15);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -141,7 +141,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetSpeed(30);
+        Fan_SetSpeed(20);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -179,29 +179,33 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
 void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，蜂鸣器）
 {
     // 温湿度报警控制 - 仅在未被蓝牙控制时生效
-    if (temp > 50 || humi > 90) { // 高级报警：温度过高或湿度过高
+    // 温湿度和MQ2报警控制 - 仅在未被蓝牙控制时生效
+    if (temp > 35 || humi > 80) { // 高级报警：温度过高或湿度过高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On();
             LED1_ON();
-            Fan_SetSpeed(30); // 风扇高速转动
+            Fan_SetSpeed(20); // 风扇高速转动
+            OLED_ShowString(3,14,"3"); 
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
         
-    } else if (temp > 40 || humi > 75) { // 中级报警：温度偏高或湿度偏高
+    } else if (temp > 30 || humi > 75) { // 中级报警：温度偏高或湿度偏高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
-            Fan_SetSpeed(20); // 风扇中速转动
+            Fan_SetSpeed(15); // 风扇中速转动
+            OLED_ShowString(3,14,"2"); 
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
         
-    } else if (temp > 30 || humi > 70) { // 低级报警：温度略高或湿度略高
+    } else if (temp > 28 || humi > 70 || MQ2_Value == 1) { // 低级报警：温度略高或湿度略高或MQ2异常
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
             Fan_SetSpeed(10); // 风扇低速转动
+            OLED_ShowString(3,14,"1");
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -357,8 +361,7 @@ int main(void)
     OLED_ShowChinese(3, 2, 1); // 度
     OLED_ShowChar(3, 5, ':');	
     OLED_ShowChar(3, 8, '%');
-    OLED_ShowChinese(4, 1, 30); // PPM
-    OLED_ShowChinese(4,2,31);
+    OLED_ShowString(4, 1, "MQ2"); // 显示"MQ2"
     OLED_ShowChar(4, 5, ':');
     
     // 主循环计数器
@@ -369,8 +372,8 @@ int main(void)
     {
         // 处理串口数据接收（每次循环都检查）
         Handle_Serial_Data();
-            ppm = MQ2_GetData_PPM();
-            // 处理蓝牙命令（延时处理）
+        MQ2_Value = MQ2_GetData(); // 获取MQ2数字值
+        // 处理蓝牙命令（延时处理）
         Process_Bluetooth_Command();
         
         // 每10个循环（约1秒）执行一次的任务
@@ -381,7 +384,14 @@ int main(void)
             // 显示温湿度
             OLED_ShowNum(2, 6, temp, 2);
             OLED_ShowNum(3, 6, humi, 2);
-            OLED_ShowFloat(4, 6, ppm, 4, 2);
+            if (MQ2_Value == 0)
+            {
+                OLED_ShowString(4, 6, "Normal  "); // 正常，后面加空格清除旧内容
+            }
+            else
+            {
+                OLED_ShowString(4, 6, "Abnormal"); // 异常
+            }
             
             // 读取并更新时间
             MyRTC_ReadTime();
