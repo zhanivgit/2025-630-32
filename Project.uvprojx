@@ -761,16 +761,6 @@
               <FilePath>.\Hardware\Fan.h</FilePath>
             </File>
             <File>
-              <FileName>Speaker.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\Speaker.c</FilePath>
-            </File>
-            <File>
-              <FileName>Speaker.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\Speaker.h</FilePath>
-            </File>
-            <File>
               <FileName>Serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\Serial.c</FilePath>

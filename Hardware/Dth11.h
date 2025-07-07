@@ -6,9 +6,6 @@
 #define DHT11_GPIO_PORT  GPIOB
 #define DHT11_GPIO_PIN   GPIO_Pin_15
 #define DHT11_GPIO_CLK   RCC_APB2Periph_GPIOB
-/*********************END**********************/
-
-/* Output mode definition */
 #define OUT 1
 #define IN  0
 

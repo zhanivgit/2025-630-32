@@ -13,48 +13,48 @@ void DHT11_Rst(void) //复位
 	Delay_us(13);     	
 }
 
-u8 DHT11_Check(void) 	   //发送低高
+u8 DHT11_Check(void) 	     //检验
 {   
 	u8 retry=0;
 	DHT11_Mode(IN);//SET INPUT	 
-    while (GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)
+    while (GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)      //等待DHT11拉低
 	{
 		retry++;
 		Delay_us(1);
 	};	 
 	if(retry>=100)return 1;
 	else retry=0;
-    while (!GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)
+    while (!GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)       //等待DHT11拉高
 	{
 		retry++;
 		Delay_us(1);
 	};
 	if(retry>=100)return 1;	    
-	return 0;
+	return 0;// 如果两个等待都成功，说明DHT11响应正常，返回0表示成功
 }
 
 
-u8 DHT11_Read_Bit(void) 			 //读取数据
+u8 DHT11_Read_Bit(void) 			           //读取高低电平，转换为0或1
 {
  	u8 retry=0;
-	while(GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)//µÈ´ý±äÎªµÍµçÆ½
+	while(GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)
 	{
 		retry++;
 		Delay_us(1);
 	}
 	retry=0;
-	while(!GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)//µÈ´ý±ä¸ßµçÆ½
+	while(!GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN)&&retry<100)
 	{
 		retry++;
 		Delay_us(1);
 	}
-	Delay_us(40);//µÈ´ý40us
+	Delay_us(40);
 	if(GPIO_ReadInputDataBit(DHT11_GPIO_PORT,DHT11_GPIO_PIN))return 1;
 	else return 0;		   
 }
 
 
-u8 DHT11_Read_Byte(void)    
+u8 DHT11_Read_Byte(void)    //读取8位字节
 {        
 	u8 i,dat;
 	dat=0;
@@ -67,7 +67,7 @@ u8 DHT11_Read_Byte(void)
 }
 
 
-u8 DHT11_Read_Data(u8 *temp,u8 *humi)    
+u8 DHT11_Read_Data(u8 *temp,u8 *humi)   //读取温湿度 
 {        
  	u8 buf[5];
 	u8 i;
@@ -89,21 +89,21 @@ u8 DHT11_Read_Data(u8 *temp,u8 *humi)
 }
 
 	 
-u8 DHT11_Init(void)
+u8 DHT11_Init(void)   //初始化
 {	 
  	GPIO_InitTypeDef  GPIO_InitStructure;	
- 	RCC_APB2PeriphClockCmd(DHT11_GPIO_CLK, ENABLE);	 //Ê¹ÄÜPA¶Ë¿ÚÊ±ÖÓ
- 	GPIO_InitStructure.GPIO_Pin = DHT11_GPIO_PIN;				 //PG11¶Ë¿ÚÅäÖÃ
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //ÍÆÍìÊä³ö
+ 	RCC_APB2PeriphClockCmd(DHT11_GPIO_CLK, ENABLE);	 
+ 	GPIO_InitStructure.GPIO_Pin = DHT11_GPIO_PIN;				
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		
  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
- 	GPIO_Init(DHT11_GPIO_PORT, &GPIO_InitStructure);				 //³õÊ¼»¯IO¿Ú
- 	GPIO_SetBits(DHT11_GPIO_PORT,DHT11_GPIO_PIN);						 //PG11 Êä³ö¸ß
+ 	GPIO_Init(DHT11_GPIO_PORT, &GPIO_InitStructure);				 
+ 	GPIO_SetBits(DHT11_GPIO_PORT,DHT11_GPIO_PIN);						
 			    
-	DHT11_Rst();  //¸´Î»DHT11
-	return DHT11_Check();//µÈ´ýDHT11µÄ»ØÓ¦
+	DHT11_Rst();  
+	return DHT11_Check();
 } 
 
-void DHT11_Mode(u8 mode)
+void DHT11_Mode(u8 mode)   //设置DTH11为输入或输出模式
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	

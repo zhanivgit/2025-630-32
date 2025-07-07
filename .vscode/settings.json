@@ -86,6 +86,10 @@
     "stm32f10x_gpio.h": "c",
     "adc.h": "c",
     "stm32f10x_rtc.h": "c",
-    "cmath": "c"
+    "cmath": "c",
+    "math.h": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "limits": "c"
   }
 }

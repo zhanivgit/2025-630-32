@@ -11,9 +11,10 @@ void MyRTC_Init(void) {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_BKP, ENABLE);
 
-    PWR_BackupAccessCmd(ENABLE);
+    PWR_BackupAccessCmd(ENABLE);//解除写保护
 
-    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5) {
+    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)//验证是否配对成功 
+    {
         RCC_LSEConfig(RCC_LSE_ON);
         while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) != SET);
 

@@ -35,7 +35,6 @@
 ".\objects\led.o"
 ".\objects\beep.o"
 ".\objects\fan.o"
-".\objects\speaker.o"
 ".\objects\serial.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
