@@ -7,13 +7,14 @@ extern  uint8_t KeyNum;
 extern uint16_t MyRTC_Time[];
 extern uint8_t Flag_Change;
 void MyRTC_SetTime(void);
+//初始化RTC
 void MyRTC_Init(void) {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_BKP, ENABLE);
 
     PWR_BackupAccessCmd(ENABLE);//解除写保护
 
-    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)//验证是否配对成功 
+    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)//验证是否配对成功，如果没有，重新配置
     {
         RCC_LSEConfig(RCC_LSE_ON);
         while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) != SET);
@@ -33,13 +34,14 @@ void MyRTC_Init(void) {
 
         RTC_ITConfig(RTC_IT_SEC, ENABLE);
         RTC_WaitForLastTask();
-    } else {
+    } else //配置成功，读取时间
+    {  
         RTC_WaitForSynchro();
         RTC_WaitForLastTask();
     }
 }
-
-void MyRTC_SetTime(void) {
+//设置时间，转换为UTC
+void MyRTC_SetTime(void){
     time_t time_cnt;
     struct tm time_date;
 
@@ -55,7 +57,7 @@ void MyRTC_SetTime(void) {
     RTC_SetCounter(time_cnt);
     RTC_WaitForLastTask();
 }
-
+//读取时间，转换为本地时间
 void MyRTC_ReadTime(void) {
     time_t time_cnt;
     struct tm time_date;
