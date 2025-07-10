@@ -112,7 +112,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetSpeed(10);
+        Fan_SetSpeed(20);
         
         // 延迟发送复杂数据，避免通信冲突
         NeedSendFullStatus = 1;
@@ -127,7 +127,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetSpeed(15);
+        Fan_SetSpeed(30);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -141,7 +141,7 @@ void Bluetooth_Control(void) // 改进的蓝牙控制
         Delay_ms(10);
         BEEP_On();
         Delay_ms(10);
-        Fan_SetSpeed(20);
+        Fan_SetSpeed(40);
         
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
@@ -180,31 +180,31 @@ void Temperature_Humidity_Alert(void) // 传感器检测（控制led,风扇，�
 {
     // 温湿度报警控制 - 仅在未被蓝牙控制时生效
     // 温湿度和MQ2报警控制 - 仅在未被蓝牙控制时生效
-    if (temp > 35 || humi > 80) { // 高级报警：温度过高或湿度过高
+    if (temp > 40 || humi > 90) { // 高级报警：温度过高或湿度过高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On();
             LED1_ON();
-            Fan_SetSpeed(20); // 风扇高速转动
+            Fan_SetSpeed(40); // 风扇高速转动
             OLED_ShowString(3,14,"3"); 
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
         
-    } else if (temp > 30 || humi > 75) { // 中级报警：温度偏高或湿度偏高
+    } else if (temp > 35 || humi > 80) { // 中级报警：温度偏高或湿度偏高
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
-            Fan_SetSpeed(15); // 风扇中速转动
+            Fan_SetSpeed(30); // 风扇中速转动
             OLED_ShowString(3,14,"2"); 
         }
         NeedSendFullStatus = 1;
         SendDelayCounter = 0;
         
-    } else if (temp > 28 || humi > 70 || MQ2_Value == 1) { // 低级报警：温度略高或湿度略高或MQ2异常
+    } else if (temp > 30 || humi > 70 || MQ2_Value == 1) { // 低级报警：温度略高或湿度略高或MQ2异常
         if (BluetoothControl == 0) { // 仅在未被蓝牙控制时生效
             BEEP_On(); // 蜂鸣器持续鸣叫
             LED1_ON(); // LED持续亮
-            Fan_SetSpeed(10); // 风扇低速转动
+            Fan_SetSpeed(20); // 风扇低速转动
             OLED_ShowString(3,14,"1");
         }
         NeedSendFullStatus = 1;
@@ -271,15 +271,15 @@ void Send_Full_Status(void) // 发送复杂数据（延迟发送）
         else if (LastRxData == 3) fanStatus = 3; // 高速
     } else {
         // 根据温湿度报警状态设置风扇状态
-        if (temp > 50 || humi > 90) fanStatus = 3;      // 高速
-        else if (temp > 40 || humi > 75) fanStatus = 2; // 中速
-        else if (temp > 30 || humi > 70) fanStatus = 1; // 低速
+        if (temp > 40 || humi > 70) fanStatus = 3;      // 高速
+        else if (temp > 35 || humi > 60) fanStatus = 2; // 中速
+        else if (temp > 30 || humi > 50) fanStatus = 1; // 低速
     }
     
     // 获取报警状态
-    if (temp > 50 || humi > 90) alertStatus = 3;      // 高级报警
-    else if (temp > 40 || humi > 75) alertStatus = 2; // 中级报警
-    else if (temp > 30 || humi > 70) alertStatus = 1; // 低级报警
+    if (temp > 40 || humi > 70) alertStatus = 3;      // 高级报警
+    else if (temp > 35 || humi > 60) alertStatus = 2; // 中级报警
+    else if (temp > 30 || humi > 50) alertStatus = 1; // 低级报警
     
     // 发送完整状态信息
     Serial_Printf("Status:T=%d,H=%d,Fan=%d,Alert=%d,Time=%02d:%02d:%02d\r\n",
