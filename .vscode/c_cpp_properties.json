@@ -94,11 +94,11 @@
         {
             "name": "Target 1",
             "includePath": [
-                "e:\\trsalatec\\温湿度检测\\Start",
-                "e:\\trsalatec\\温湿度检测\\Library",
-                "e:\\trsalatec\\温湿度检测\\User",
-                "e:\\trsalatec\\温湿度检测\\System",
-                "e:\\trsalatec\\温湿度检测\\Hardware"
+                "e:\\trsalatec\\杂文件\\温湿度检测\\Start",
+                "e:\\trsalatec\\杂文件\\温湿度检测\\Library",
+                "e:\\trsalatec\\杂文件\\温湿度检测\\User",
+                "e:\\trsalatec\\杂文件\\温湿度检测\\System",
+                "e:\\trsalatec\\杂文件\\温湿度检测\\Hardware"
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",
